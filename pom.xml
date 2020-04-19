@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>es.apba.infra.esb</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    
+    <groupId>es.apba.infra.esb.aismanager</groupId>
+    <artifactId>parent</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    
+    <name>aismanager</name>
+    <description>Integration bundles with the AIS manager application</description>
+    
+    <organization>
+        <name>APBA</name>
+        <url>https://www.apba.es</url>
+    </organization>
+    
+    <developers>
+        <developer>
+            <name>Paco Saucedo</name>                    
+        </developer>
+    </developers>
+    
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    
+    <scm>
+        <connection>scm:git:git://github.com/adtapba/aismanager-sample-bundles.git</connection>
+        <developerConnection>scm:git:ssh://github.com/adtapba/aismanager-sample-bundles.git</developerConnection>
+        <url>https://github.com/adtapba/aismanager-sample-bundles</url>
+    </scm>
+    
+    <modules>  
+        <module>api</module>
+        <module>aismanager2esb</module>
+        <module>esb2aismanager</module>
+        <module>distribution</module>
+    </modules>
+</project>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:camel="http://camel.apache.org/schema/blueprint"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0"
+           xmlns:enc="http://karaf.apache.org/xmlns/jasypt/v1.0.0"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint  http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.2.0.xsd">
+
+    <!-- Config properties -->
+    <cm:property-placeholder id="cfgprops" persistent-id="es.apba.infra.esb.aismanager.esb2aismanager.consumers" update-strategy="reload"/>
+
+    <bean id="cfgpropsencryptor" class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+        <property name="config">
+            <bean class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+                <property name="algorithm" value="PBEWithMD5AndDES" />
+                <property name="passwordEnvName" value="APBA_JASYPT_ENCRYPTION_PASSWORD" />
+            </bean>
+        </property>        
+    </bean>
+    
+    <enc:property-placeholder encryptor-ref="cfgpropsencryptor"/>
+    
+    <bean id="jasyptPropertiesParser" class="org.apache.camel.component.jasypt.JasyptPropertiesParser">
+        <property name="encryptor" ref="cfgpropsencryptor"/>
+    </bean>
+    
+    <!-- ActiveMQ parameterized component -->
+    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${activemq.brokerURL}"/>
+        <property name="userName" value="${activemq.username}"/>
+        <property name="password" value="${activemq.password}"/>
+    </bean>
+ 
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+        <property name="connectionFactory" ref="activemqConnectionFactory"/>
+    </bean>  
+    
+    <!-- Redelivery policies for the dead letter pattern implementation -->    
+    <bean id="redeliveryPolicyOnConnectException" class="org.apache.camel.processor.RedeliveryPolicy">
+        <property name="maximumRedeliveries" value="${connectException.maximumRedeliveries}"/>
+        <property name="redeliveryDelay" value="${connectException.redeliveryDelay}"/>
+        <property name="logRetryAttempted" value="true"/>
+        <property name="retryAttemptedLogLevel" value="WARN"/>
+    </bean>
+    
+    <bean id="redeliveryPolicyOnOtherException" class="org.apache.camel.processor.RedeliveryPolicy">
+        <property name="maximumRedeliveries" value="${otherException.maximumRedeliveries}"/>
+        <property name="redeliveryDelay" value="${otherException.redeliveryDelay}"/>
+        <property name="logRetryAttempted" value="true"/>
+        <property name="retryAttemptedLogLevel" value="WARN"/>
+    </bean>
+    
+    <!-- Integration routes -->
+    <camelContext id="CtxEsb2AisManagerConsumers" xmlns="http://camel.apache.org/schema/blueprint">      
+        <propertyPlaceholder location="blueprint:cfgprops" propertiesParserRef="jasyptPropertiesParser"/>                
+        
+        <route id="RtTrackEventConsume">        
+            <from uri="activemq:topic:apba.topic.aisstation.trackevent?clientId=AisManager&amp;durableSubscriptionName=AisManager"/>
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Consuming message ... | IN | apbaTransactionId: ${header.apbaTransactionId}"/>
+                    
+            <!-- Dead letter pattern custom implementation -->       
+            <onException redeliveryPolicyRef="redeliveryPolicyOnConnectException">
+                <exception>java.net.ConnectException</exception>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+                <log loggingLevel="ERROR" message="${camelId} - ${routeId} - ${exchangeId} | Connect exception | ERROR | apbaTransactionId: ${header.apbaTransactionId}"/>                                     
+                <to uri="activemq:queue:DLQ.apba.queue.aismanager.trackevent"/>
+                <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message sent to DLQ | OUT | apbaTransactionId: ${header.apbaTransactionId}"/>
+            </onException>
+            
+            <onException redeliveryPolicyRef="redeliveryPolicyOnOtherException">
+                <exception>java.lang.Exception</exception>
+                <handled>
+                    <constant>true</constant>
+                </handled>
+                <log loggingLevel="ERROR" message="${camelId} - ${routeId} - ${exchangeId} | Exception detected | ERROR | apbaTransactionId: ${header.apbaTransactionId} | ${exception.message}"/>
+                <to uri="activemq:queue:DLQ.apba.queue.aismanager.trackevent"/>   
+                <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message sent to DLQ | OUT | apbaTransactionId: ${header.apbaTransactionId}"/>                     
+            </onException>
+            
+            <setHeader headerName="Exchange.HTTP_METHOD">
+                <constant>POST</constant>
+            </setHeader>
+            <setHeader headerName="Exchange.CONTENT_TYPE">
+                <constant>application/json</constant>
+            </setHeader> 
+            <removeHeaders pattern="Authorization"/>
+            
+            <to uri="{{aisManagerDestinationEndpoint.TrackEvent.URL}}?bridgeEndpoint=true&amp;authenticationPreemptive=true&amp;authMethod=Basic&amp;authUsername={{aisManagerDestinationEndpoint.username}}&amp;authPassword={{aisManagerDestinationEndpoint.password}}"/>            
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message consumed | OUT | apbaTransactionId: ${header.apbaTransactionId} | remoteEndpointHttpResponseCode: ${header[CamelHttpResponseCode]}"/>
+        </route>            
+        
+    </camelContext>
+
+</blueprint>

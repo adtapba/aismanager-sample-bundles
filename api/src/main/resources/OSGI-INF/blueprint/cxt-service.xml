@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cxf="http://camel.apache.org/schema/blueprint/cxf"
+           xmlns:jaxrs="http://cxf.apache.org/blueprint/jaxrs"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint/cxf http://camel.apache.org/schema/blueprint/cxf/camel-cxf.xsd
+            http://camel.apache.org/schema/blueprint  http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+            http://cxf.apache.org/schemas/blueprint http://cxf.apache.org/schemas/blueprint/core.xsd
+            http://cxf.apache.org/blueprint/jaxrs  http://cxf.apache.org/schemas/blueprint/jaxrs.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd
+            http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.2.0.xsd">
+
+    <!-- Config properties -->
+    <cm:property-placeholder persistent-id="es.apba.infra.esb.aismanager.api" update-strategy="reload"/>    
+  
+    <!-- JAAS interceptors & exception mappers -->
+    <bean id="authenticationInterceptor" class="org.apache.cxf.interceptor.security.JAASLoginInterceptor">
+        <property name="contextName" value="${jaas.context.name}"/>
+        <property name="roleClassifier" value="${jaas.role.classifier}"/> 
+    </bean>
+
+    <bean id="authorizationInterceptor" class="org.apache.cxf.interceptor.security.SimpleAuthorizingInterceptor">
+        <property name="methodRolesMap">
+            <map>
+                <entry key="postLineCrossedEvent" value="${jass.authorized.role.publishers}"/>
+                <entry key="getGeographicalLine" value="${jass.authorized.role.proxyServicesAdminUsers} ${jass.authorized.role.proxyServicesRegularUsers}"/>
+                <entry key="createGeographicalLine" value="${jass.authorized.role.proxyServicesAdminUsers}"/>
+                <entry key="updateGeographicalLine" value="${jass.authorized.role.proxyServicesAdminUsers}"/>
+                <entry key="deleteGeographicalLine" value="${jass.authorized.role.proxyServicesAdminUsers}"/>
+                <entry key="getPosition" value="${jass.authorized.role.proxyServicesAdminUsers} ${jass.authorized.role.proxyServicesRegularUsers}"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="exceptionMessageProvider" class="es.apba.infra.esb.support.cxf.message.JsonExceptionMessageProvider" />
+    
+    <bean id="authenticationExceptionMapper" class="es.apba.infra.esb.support.cxf.provider.mapper.AuthenticationExceptionMapper">
+        <argument ref="exceptionMessageProvider" />
+    </bean>
+    
+    <bean id="authorizationExceptionMapper" class="es.apba.infra.esb.support.cxf.provider.mapper.AuthorizationExceptionMapper">
+        <argument ref="exceptionMessageProvider" />
+    </bean>
+    
+    <bean id="jsonProcessingExceptionMapper" class="es.apba.infra.esb.support.cxf.provider.mapper.JsonProcessingExceptionMapper">
+        <argument ref="exceptionMessageProvider" />
+    </bean>
+    
+    <!-- Json Provider -->
+    <bean id="jsonProvider" class="com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider"/>
+        
+    <!-- REST resource for the AIS manager app to publish line crossed event messages -->
+    <bean id="lineCrossedEventResourceBean" class="es.apba.infra.esb.aismanager.api.linecrossedevent.LineCrossedEventResource" />  
+     
+    <!-- Proxy of the AIS manager REST geographical line resource -->
+    <bean id="geographicalLineResourceBean" class="es.apba.infra.esb.aismanager.api.geographicalline.GeographicalLineResource" />
+    
+    <!-- Proxy of the AIS manager REST position resource -->
+    <bean id="positionResourceBean" class="es.apba.infra.esb.aismanager.api.position.PositionResource" />
+    
+    <!-- Endpoints -->
+    <cxf:rsServer id="lineCrossedEventResourceEndpoint" address="{{linecrossedevent.publish.endpoint}}">
+        <cxf:providers>
+            <ref component-id="jsonProvider"/>
+            <ref component-id="authenticationExceptionMapper"/>
+            <ref component-id="authorizationExceptionMapper"/>
+            <ref component-id="jsonProcessingExceptionMapper"/>
+        </cxf:providers>
+    
+        <cxf:serviceBeans>
+            <ref component-id="lineCrossedEventResourceBean" />
+        </cxf:serviceBeans>
+        
+        <cxf:inInterceptors>
+            <ref component-id="authenticationInterceptor"/>
+            <ref component-id="authorizationInterceptor"/>
+        </cxf:inInterceptors>
+    </cxf:rsServer>
+    
+    <cxf:rsServer id="geographicalLineResourceEndpoint" address="{{geographicalline.publish.endpoint}}">
+        <cxf:providers>
+            <ref component-id="jsonProvider"/>
+            <ref component-id="authenticationExceptionMapper"/>
+            <ref component-id="authorizationExceptionMapper"/>
+            <ref component-id="jsonProcessingExceptionMapper"/>
+        </cxf:providers>
+    
+        <cxf:serviceBeans>
+            <ref component-id="geographicalLineResourceBean" />
+        </cxf:serviceBeans>
+        
+        <cxf:inInterceptors>
+            <ref component-id="authenticationInterceptor"/>
+            <ref component-id="authorizationInterceptor"/>
+        </cxf:inInterceptors>
+    </cxf:rsServer>
+    
+    <cxf:rsServer id="positionResourceEndpoint" address="{{position.publish.endpoint}}">
+        <cxf:providers>
+            <ref component-id="jsonProvider"/>
+            <ref component-id="authenticationExceptionMapper"/>
+            <ref component-id="authorizationExceptionMapper"/>
+            <ref component-id="jsonProcessingExceptionMapper"/>
+        </cxf:providers>
+    
+        <cxf:serviceBeans>
+            <ref component-id="positionResourceBean" />
+        </cxf:serviceBeans>
+        
+        <cxf:inInterceptors>
+            <ref component-id="authenticationInterceptor"/>
+            <ref component-id="authorizationInterceptor"/>
+        </cxf:inInterceptors>
+    </cxf:rsServer>
+    
+</blueprint>

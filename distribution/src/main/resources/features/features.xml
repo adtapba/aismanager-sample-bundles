@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<!--
+    Karaf commands:
+    
+        feature:repo-add mvn:es.apba.infra.esb.aismanager/distribution/${project.version}/xml/features
+    
+        feature:install aismanager
+-->
+
+<features name="aismanager-features" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+
+    <feature version="${project.version}" name="aismanager">
+        <feature version="${jasypt.encryption.version}">jasypt-encryption</feature>   
+        <feature version="${camel.version}">camel-jasypt</feature>  
+        <feature version="${camel.version}">camel-cxf</feature>
+        <feature version="${camel.version}">camel-http</feature>
+        <feature version="${camel.version}">camel-http4</feature> 
+        <feature version="${camel.version}">camel-jackson</feature>    
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.jaxrs.version}</bundle>           
+        <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.jaxrs.version}</bundle>             
+        <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.jaxrs.version}</bundle>  
+        <bundle>mvn:es.apba.infra.esb.support/apba-support-cxf/1.0.0-SNAPSHOT</bundle>  
+        <bundle>mvn:es.apba.infra.esb.aismanager/api/${project.version}</bundle>   
+        <bundle>mvn:es.apba.infra.esb.aismanager/aismanager2esb/${project.version}</bundle> 
+        <bundle>mvn:es.apba.infra.esb.aismanager/esb2aismanager-consumers/${project.version}</bundle>    
+        <bundle>mvn:es.apba.infra.esb.aismanager/esb2aismanager-proxyservices/${project.version}</bundle>    
+    </feature>
+    
+</features>
+
+

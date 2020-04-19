@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0"
+           xmlns:enc="http://karaf.apache.org/xmlns/jasypt/v1.0.0"
+           xsi:schemaLocation="
+            http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+            http://camel.apache.org/schema/blueprint  http://camel.apache.org/schema/blueprint/camel-blueprint.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.2.0 http://aries.apache.org/schemas/blueprint-cm/blueprint-cm-1.2.0.xsd">
+
+    <!-- Config properties -->
+    <cm:property-placeholder persistent-id="es.apba.infra.esb.aismanager.aismanager2esb" update-strategy="reload"/>
+    
+    <enc:property-placeholder>
+        <enc:encryptor class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+            <property name="config">
+                <bean class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+                    <property name="algorithm" value="PBEWithMD5AndDES" />
+                    <property name="passwordEnvName" value="APBA_JASYPT_ENCRYPTION_PASSWORD" />
+                </bean>
+            </property>
+        </enc:encryptor>
+    </enc:property-placeholder>
+    
+    <!-- ActiveMQ parameterized component -->
+    <bean id="activemqConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+        <property name="brokerURL" value="${activemq.brokerURL}"/>
+        <property name="userName" value="${activemq.username}"/>
+        <property name="password" value="${activemq.password}"/>
+    </bean>
+ 
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent">
+        <property name="connectionFactory" ref="activemqConnectionFactory"/>
+    </bean>   
+    
+    <!-- Repository for published messages keys -->
+    <bean id="messageIdsRepo"
+          class="org.apache.camel.processor.idempotent.FileIdempotentRepository"
+          factory-method="fileIdempotentRepository">
+        <argument value="${idempotent.file.repository.messageIds}" />
+    </bean>
+
+    <!-- Integration routes -->
+    <camelContext id="CtxAisManager2EsbMessageProcessing" xmlns="http://camel.apache.org/schema/blueprint">
+                
+        <route id="RtLineCrossedEventMessageReception">
+            <from uri="direct-vm:LineCrossedEventRestResource_postLineCrossedEvent" />  
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message received | PROCESS | apbaTransactionId: ${header.apbaTransactionId}"/>                                      
+                   
+            <idempotentConsumer messageIdRepositoryRef="messageIdsRepo">
+                <header>apbaTransactionId</header>
+                <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Queuing message for processing ... | PROCESS | apbaTransactionId: ${header.apbaTransactionId}"/>
+                <recipientList>
+                    <simple>activemq:queue:apba.queue.aismanager.linecrossedevent?exchangePattern=InOnly</simple>
+                </recipientList>
+            </idempotentConsumer>
+            <choice>
+                <when>
+                    <simple>${exchangeProperty.CamelDuplicateMessage} == true</simple>
+                    <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Duplicated message | PROCESS | apbaTransactionId: ${header.apbaTransactionId}"/> 
+                </when>
+            </choice>
+            
+            <setBody>
+                <simple><![CDATA[{ "result":"CREATED" }]]></simple>
+            </setBody>
+            <removeHeaders pattern="*" excludePattern="apbaTransactionId" />
+            <setHeader headerName="Exchange.HTTP_RESPONSE_CODE">
+                <constant>201</constant>
+            </setHeader>
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message reception finished | OUT | apbaTransactionId: ${header.apbaTransactionId} | httpResponseCodeSent: 201 | ${body}"/> 
+        </route>
+        
+        <route id="RtLineCrossedEventMessagePublishing">
+            <from uri="activemq:queue:apba.queue.aismanager.linecrossedevent" />
+            <inOnly uri="activemq:topic:apba.topic.aismanager.linecrossedevent"/>     
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message published | OUT | apbaTransactionId: ${header.apbaTransactionId}"/>           
+        </route>
+        
+    </camelContext>
+
+</blueprint>

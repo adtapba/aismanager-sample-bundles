@@ -1,0 +1,5 @@
+/api/target/
+/aismanager2esb/target/
+/esb2aismanager/proxyservices/target/
+/distribution/target/
+/esb2aismanager/consumers/target/

@@ -1,0 +1,61 @@
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+           xsi:schemaLocation="
+                http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
+                http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
+
+    <bean id="uuidProducer" class="es.apba.infra.esb.aismanager.util.UuidProducer" />
+	
+    <camelContext id="CtxAisManagerApiRouting" xmlns="http://camel.apache.org/schema/blueprint">        
+        <route id="RtLineCrossedEventRestResource">
+            <from uri="cxfrs:bean:lineCrossedEventResourceEndpoint?bindingStyle=SimpleConsumer" />	
+            
+            <setHeader headerName="apbaTransactionId">
+                <simple>AisManager_LineCrossedEvent_${body.uuid}</simple>
+            </setHeader>
+            
+            <marshal>
+                <json library="Jackson" />
+            </marshal>                          
+                                  
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | API Routing | IN | apbaTransactionId: ${header.apbaTransactionId} | ${body}"/>
+                    
+            <to uri="direct-vm:LineCrossedEventRestResource_postLineCrossedEvent"/>
+        </route>    
+          
+        <route id="RtGeographicalLineRestResource">
+            <from uri="cxfrs:bean:geographicalLineResourceEndpoint?bindingStyle=SimpleConsumer" />	
+            
+            <setHeader headerName="apbaTransactionId">
+                <simple>AisManager_GeographicalLine_${bean:uuidProducer?method=getUUID}</simple>
+            </setHeader>
+            
+            <marshal>
+                <json library="Jackson" />
+            </marshal>                          
+                                  
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | API Routing | IN | apbaTransactionId: ${header.apbaTransactionId} | ${body}"/>
+                    
+            <recipientList>
+                <simple>direct-vm:GeographicalLineRestResource_${header.operationName}</simple>
+            </recipientList>
+        </route>   
+          
+        <route id="RtPositionRestResource">
+            <from uri="cxfrs:bean:positionResourceEndpoint?bindingStyle=SimpleConsumer" />	
+            
+            <setHeader headerName="apbaTransactionId">
+                <simple>AisManager_Position_${bean:uuidProducer?method=getUUID}</simple>
+            </setHeader>
+            
+            <marshal>
+                <json library="Jackson" />
+            </marshal>                          
+                                  
+            <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | API Routing | IN | apbaTransactionId: ${header.apbaTransactionId} | ${body}"/>
+                    
+            <to uri="direct-vm:PositionRestResource_getPosition"/>
+        </route>
+    </camelContext>
+
+</blueprint>

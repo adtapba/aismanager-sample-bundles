@@ -1,0 +1,13 @@
+{
+	"uuid" : "8eb3d6a2-cd52-47ea-84c5-60623a407b47",
+	"timestamp" : "2020-04-10T18:35:40.214Z",
+	"vessel" : {
+		"imoCode" : 9321483,
+		"mmsi" : 220417000,
+		"name" : "EMMA MAERSK"
+	},
+	"coordinates" : {
+		"longitude" : -5.431462,
+		"latitude": 36.105442
+	}
+}

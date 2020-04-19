@@ -1,0 +1,13 @@
+{
+	"uuid" : "8eb3d6a2-cd52-47ea-84c5-60623a407b50",
+	"timestamp" : "2020-04-08T10:20:10.188Z",
+	"vessel" : {
+		"imoCode" : 9454395,
+		"mmsi" : 228316800,
+		"name" : "CMA CGM AMERIGO VESPUCCI"
+	},
+	"coordinates" : {
+		"longitude" : -5.431462,
+		"latitude": 36.105650 
+	}
+}
