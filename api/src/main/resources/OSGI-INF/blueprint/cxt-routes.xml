@@ -6,7 +6,7 @@
 
     <bean id="uuidProducer" class="es.apba.infra.esb.aismanager.util.UuidProducer" />
 	
-    <camelContext id="CtxAisManagerApiRouting" xmlns="http://camel.apache.org/schema/blueprint">        
+    <camelContext id="CxtAisManagerApiRouting" xmlns="http://camel.apache.org/schema/blueprint">        
         <route id="RtLineCrossedEventRestResource">
             <from uri="cxfrs:bean:lineCrossedEventResourceEndpoint?bindingStyle=SimpleConsumer" />	
             
