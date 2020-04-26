@@ -27,11 +27,6 @@
             <artifactId>camel-http4</artifactId>
             <version>${camel.version}</version>
         </dependency>
-        <dependency>
-            <groupId>es.apba.infra.esb.support</groupId>
-            <artifactId>apba-support-cxf</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>
