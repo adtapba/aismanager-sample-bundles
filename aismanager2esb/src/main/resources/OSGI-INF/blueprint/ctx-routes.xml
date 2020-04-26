@@ -38,7 +38,7 @@
     <bean id="messageIdsRepo"
           class="org.apache.camel.processor.idempotent.FileIdempotentRepository"
           factory-method="fileIdempotentRepository">
-        <argument value="${idempotent.file.repository.messageIds}" />
+        <argument value="${idempotent.file.repository.aisManagerLineCrossedEventIds}" />
     </bean>
 
     <!-- Integration routes -->
