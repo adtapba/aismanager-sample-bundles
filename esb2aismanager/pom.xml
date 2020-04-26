@@ -13,7 +13,7 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <name>esb2aismanager</name>
+    <name>es.apba.infra.esb.aismanager:esb2aismanager</name>
     <description>Interfaces between the ESB and the AIS manager application</description>
     
     <modules>  

@@ -12,7 +12,7 @@
     <artifactId>distribution</artifactId>
     <packaging>pom</packaging>
     
-    <name>aismanager-distribution</name>
+    <name>es.apba.infra.esb.aismanager:distribution</name>
     <description>
         Contains helper data for the integration application:
         

@@ -13,7 +13,7 @@
     <artifactId>esb2aismanager-consumers</artifactId>
     <packaging>bundle</packaging>
 
-    <name>esb2aismanager-consumers</name>
+    <name>es.apba.infra.esb.aismanager:esb2aismanager-consumers</name>
     <description>Routes for AIS manager application to consume information from the ESB</description>
     
     <dependencies>       

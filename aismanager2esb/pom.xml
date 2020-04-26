@@ -13,7 +13,7 @@
     <artifactId>aismanager2esb</artifactId>
     <packaging>bundle</packaging>
 
-    <name>aismanager2esb</name>
+    <name>es.apba.infra.esb.aismanager:aismanager2esb</name>
     <description>Routes for the AIS manager application to publish information on the ESB</description>
     
     <dependencies>        
