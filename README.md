@@ -41,6 +41,8 @@ feature:install aismanager
 ```
 5. Construir y ejecutar [aismanager-sample-app](https://github.com/adtapba/aismanager-sample-app).
 6. Para probar los bundles, se dispone de unas [suites de tests de los recursos REST que se publican en ServiceMix](https://github.com/adtapba/aismanager-sample-bundles/tree/master/distribution/src/test/resources/postman) que se pueden importar en [Postman](https://www.postman.com/):
+
 ![](https://github.com/adtapba/aismanager-sample-bundles/blob/master/distribution/src/main/resources/images/PostmanCollectionRunnerSample.png)
 7. También hay varios [mensajes de ejemplo](https://github.com/adtapba/aismanager-sample-bundles/tree/master/distribution/src/test/resources/sample-messages/trackevent) que se pueden enviar al tópico apba.topic.aisstation.trackevent mediante la herramienta [Hawtio](https://hawt.io) desplegada en ServiceMix:
+
 ![](https://github.com/adtapba/aismanager-sample-bundles/blob/master/distribution/src/main/resources/images/HawtioSendingMessageToATopicSample.png)
