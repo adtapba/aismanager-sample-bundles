@@ -187,8 +187,8 @@ components:
       type: object
       properties:
         geographicalLineCode:
-          type: integer
-          format: int64
+          type: string
+          example: baylimits
         descripcion:
           type: string
           example: Bay limits
@@ -205,29 +205,6 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/GeographicalLine'
-    Vessel:
-      title: Vessel
-      type: object
-      properties:
-        imoCode:
-          type: integer
-          format: int64
-          example: '9321483'
-          minimum: 1000000
-          maximum: 9999999
-        mmsi:
-          type: integer
-          format: int64
-          example: '220417000'
-          minimum: 100000000
-          maximum: 999999999
-        name:
-          type: string
-          example: EMMA MAERSK
-      required:
-        - imoCode
-        - mmsi
-        - name
     LineCrossedEvent:
       title: lineCrossedEvent
       type: object
@@ -253,9 +230,9 @@ components:
       required:
         - uuid
         - timestamp
-        - vessel
+        - vesselImoCode
         - geographicalLine
-        - eventType
+        - geographicalLineCode
   securitySchemes:
     Basic Auth:
       type: http
