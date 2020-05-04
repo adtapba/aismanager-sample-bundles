@@ -37,7 +37,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -97,7 +97,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -157,7 +157,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -217,7 +217,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -277,7 +277,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -337,7 +337,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -397,7 +397,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"
@@ -457,7 +457,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://localhost:8143/cxf/aismanager/v1/linecrossedevent",
+					"raw": "https://localhost:8143/cxf/v1/aislinecrossedbyvesselevent",
 					"protocol": "https",
 					"host": [
 						"localhost"

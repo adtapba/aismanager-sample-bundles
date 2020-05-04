@@ -9,7 +9,7 @@ servers:
   - url: 'https://localhost:8143/aismanager/v1'
     description: localhost
 paths:
-  /geographicalline:
+  /aisgeographicalline:
     get:
       summary: Gets all geographical lines
       tags: []
@@ -50,7 +50,7 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GeographicalLine'
-  '/geographicalline/{geographicalLineCode}':
+  '/aisgeographicalline/{geographicalLineCode}':
     parameters:
       - schema:
           type: string
@@ -108,7 +108,7 @@ paths:
         '404':
           description: Not Found
       description: Delete an existing geographical line
-  '/position/{vesselImoCode}':
+  '/vesselposition/{vesselImoCode}':
     get:
       summary: Gets position
       tags: []
@@ -139,7 +139,7 @@ paths:
         required: true
         description: |
           Vessel IMO code
-  /linecrossedevent:
+  /aislinecrossedbyvesselevent:
     post:
       summary: Post a line crossed event
       operationId: postLineCrossedEvent
