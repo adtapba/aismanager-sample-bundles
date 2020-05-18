@@ -47,7 +47,7 @@
     </bean>
 
     <!-- Integration routes -->
-    <camelContext id="CxtAisManager2EsbMessageProcessing" xmlns="http://camel.apache.org/schema/blueprint">
+    <camelContext id="CtxAisManager2EsbMessageProcessing" xmlns="http://camel.apache.org/schema/blueprint">
                 
         <route id="RtLineCrossedEventMessageReception">
             <from uri="direct-vm:LineCrossedEventRestResource_postLineCrossedEvent" />  

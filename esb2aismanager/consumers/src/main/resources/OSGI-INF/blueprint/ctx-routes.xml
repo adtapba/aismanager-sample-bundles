@@ -55,7 +55,7 @@
     </bean>
     
     <!-- Integration routes -->
-    <camelContext id="CxtEsb2AisManagerConsumers" xmlns="http://camel.apache.org/schema/blueprint">      
+    <camelContext id="CtxEsb2AisManagerConsumers" xmlns="http://camel.apache.org/schema/blueprint">      
         <propertyPlaceholder location="blueprint:cfgprops" propertiesParserRef="jasyptPropertiesParser"/>                
         
         <route id="RtTrackEventConsume">        
