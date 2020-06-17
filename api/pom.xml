@@ -37,6 +37,11 @@
             <artifactId>apba-support-cxf</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>es.apba.infra.esb.support</groupId>
+            <artifactId>apba-support-camel</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

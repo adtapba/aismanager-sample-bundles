@@ -4,7 +4,7 @@
                 http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
                 http://camel.apache.org/schema/blueprint http://camel.apache.org/schema/blueprint/camel-blueprint.xsd">
 
-    <bean id="uuidProducer" class="es.apba.infra.esb.aismanager.util.UuidProducer" />
+    <bean id="uuidProducer" class="es.apba.infra.esb.support.camel.util.UuidProducer" />
 	
     <camelContext id="CtxAisManagerApiRouting" xmlns="http://camel.apache.org/schema/blueprint">        
         <route id="RtLineCrossedEventRestResource">
