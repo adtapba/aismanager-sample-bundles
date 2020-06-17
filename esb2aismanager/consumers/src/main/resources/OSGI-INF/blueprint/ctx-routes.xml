@@ -39,19 +39,11 @@
         <property name="connectionFactory" ref="activemqConnectionFactory"/>
     </bean>  
     
-    <!-- Redelivery policies for the dead letter pattern implementation -->    
-    <bean id="redeliveryPolicyOnConnectException" class="org.apache.camel.processor.RedeliveryPolicy">
-        <property name="maximumRedeliveries" value="${connectException.maximumRedeliveries}"/>
-        <property name="redeliveryDelay" value="${connectException.redeliveryDelay}"/>
-        <property name="logRetryAttempted" value="true"/>
-        <property name="retryAttemptedLogLevel" value="WARN"/>
-    </bean>
-    
-    <bean id="redeliveryPolicyOnOtherException" class="org.apache.camel.processor.RedeliveryPolicy">
-        <property name="maximumRedeliveries" value="${otherException.maximumRedeliveries}"/>
-        <property name="redeliveryDelay" value="${otherException.redeliveryDelay}"/>
-        <property name="logRetryAttempted" value="true"/>
-        <property name="retryAttemptedLogLevel" value="WARN"/>
+    <!-- Redelivery policy for the dead letter pattern implementation -->    
+    <bean id="redeliveryPolicy" class="es.apba.infra.esb.support.camel.processor.ConsumerRedeliveryPolicy">
+        <argument value="${connectException.maximumRedeliveries}"/>  
+        <argument value="${otherException.maximumRedeliveries}"/>
+        <argument value="${onException.redeliveryDelayMiliseconds}"/>
     </bean>
     
     <!-- Integration routes -->
@@ -63,7 +55,7 @@
             <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Consuming message ... | IN | apbaTransactionId: ${header.apbaTransactionId}"/>
                     
             <!-- Dead letter pattern custom implementation -->       
-            <onException redeliveryPolicyRef="redeliveryPolicyOnConnectException">
+            <onException redeliveryPolicyRef="redeliveryPolicy">
                 <exception>java.net.ConnectException</exception>
                 <handled>
                     <constant>true</constant>
@@ -73,7 +65,7 @@
                 <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message sent to DLQ | OUT | apbaTransactionId: ${header.apbaTransactionId}"/>
             </onException>
             
-            <onException redeliveryPolicyRef="redeliveryPolicyOnOtherException">
+            <onException redeliveryPolicyRef="redeliveryPolicy">
                 <exception>java.lang.Exception</exception>
                 <handled>
                     <constant>true</constant>
