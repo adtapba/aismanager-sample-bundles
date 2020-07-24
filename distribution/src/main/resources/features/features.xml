@@ -8,7 +8,7 @@
         feature:install aismanager
 -->
 
-<features name="aismanager-features" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
+<features name="aismanager-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
 
     <feature version="${project.version}" name="aismanager">
         <feature version="${jasypt.encryption.version}">jasypt-encryption</feature>   
