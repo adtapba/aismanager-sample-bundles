@@ -50,8 +50,13 @@
     <camelContext id="CtxEsb2AisManagerConsumers" xmlns="http://camel.apache.org/schema/blueprint">      
         <propertyPlaceholder location="blueprint:cfgprops" propertiesParserRef="jasyptPropertiesParser"/>                
         
-        <route id="RtTrackEventConsume">        
+        <route id="RtTrackEventConsume"> 
             <from uri="activemq:topic:apba.topic.aisstation.trackevent?clientId=AisManager&amp;durableSubscriptionName=AisManager"/>
+            <to uri="direct:TrackEventConsume"/>
+        </route>
+        
+        <route id="RtTrackEventConsumingProcess">       
+            <from uri="direct:TrackEventConsume"/> 
             <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Consuming message ... | IN | apbaTransactionId: ${header.apbaTransactionId}"/>
                     
             <!-- Dead letter pattern custom implementation -->       
@@ -85,7 +90,19 @@
             
             <to uri="{{aisManagerDestinationEndpoint.TrackEvent.URL}}?bridgeEndpoint=true&amp;authenticationPreemptive=true&amp;authMethod=Basic&amp;authUsername={{aisManagerDestinationEndpoint.username}}&amp;authPassword={{aisManagerDestinationEndpoint.password}}"/>            
             <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message consumed | OUT | apbaTransactionId: ${header.apbaTransactionId} | remoteEndpointHttpResponseCode: ${header[CamelHttpResponseCode]}"/>
-        </route>            
+        </route>  
+        
+        <!-- DLQ processing routes available for administrators-->
+        <route id="RtTrackEventPurgeDLQ" autoStartup="false">
+            <from uri="activemq:queue:DLQ.apba.queue.aismanager.trackevent"/>
+            <log loggingLevel="WARN" message="${camelId} - ${routeId} - ${exchangeId} | Message purged | OUT | apbaTransactionId: ${header.apbaTransactionId} | ${body}"/>              
+        </route>  
+        
+        <route id="RtTrackEventProcessDLQ" autoStartup="false">
+            <from uri="activemq:queue:DLQ.apba.queue.aismanager.trackevent"/>
+            <log loggingLevel="WARN" message="${camelId} - ${routeId} - ${exchangeId} | Message re-injeted on consumer | PROCESS | apbaTransactionId: ${header.apbaTransactionId}"/>
+            <to uri="direct:TrackEventConsume"/>
+        </route>         
         
     </camelContext>
 
