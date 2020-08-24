@@ -3,9 +3,8 @@
 <!--
     Karaf commands:
     
-        feature:repo-add mvn:es.apba.infra.esb.aismanager/distribution/${project.version}/xml/features
-    
-        feature:install aismanager/${project.version}
+feature:repo-add mvn:es.apba.infra.esb.aismanager/distribution/${project.version}/xml/features
+feature:install aismanager/${project.version}
 -->
 
 <features name="aismanager-features-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.0.0">
