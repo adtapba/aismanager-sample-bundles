@@ -75,7 +75,7 @@
                 <handled>
                     <constant>true</constant>
                 </handled>
-                <log loggingLevel="ERROR" message="${camelId} - ${routeId} - ${exchangeId} | Exception detected | ERROR | apbaTransactionId: ${header.apbaTransactionId} | ${exception.message}"/>
+                <log loggingLevel="ERROR" message="${camelId} - ${routeId} - ${exchangeId} | Exception detected | ERROR | apbaTransactionId: ${header.apbaTransactionId} | ${exception.stacktrace}"/>
                 <to uri="activemq:queue:DLQ.apba.queue.aismanager.trackevent"/>   
                 <log loggingLevel="INFO" message="${camelId} - ${routeId} - ${exchangeId} | Message sent to DLQ | OUT | apbaTransactionId: ${header.apbaTransactionId}"/>                     
             </onException>
