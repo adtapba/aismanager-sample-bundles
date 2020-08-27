@@ -6,7 +6,7 @@ info:
     name: Apache 2.0
   description: Sample basic imaginary AIS manager bundles API
 servers:
-  - url: 'https://localhost:8143/aismanager/v1'
+  - url: 'https://localhost:8143/cxf/v1'
     description: localhost
 paths:
   /aisgeographicalline:
