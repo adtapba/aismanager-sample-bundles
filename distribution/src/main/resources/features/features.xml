@@ -19,7 +19,7 @@ feature:install aismanager/${project.version}
         <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-base/${jackson.jaxrs.version}</bundle>           
         <bundle>mvn:com.fasterxml.jackson.jaxrs/jackson-jaxrs-json-provider/${jackson.jaxrs.version}</bundle>             
         <bundle>mvn:com.fasterxml.jackson.core/jackson-annotations/${jackson.jaxrs.version}</bundle>  
-        <bundle>mvn:es.apba.infra.esb.support/apba-support-camel/1.0.0</bundle>  
+        <bundle>mvn:es.apba.infra.esb.support/apba-support-camel/1.0.1</bundle>  
         <bundle>mvn:es.apba.infra.esb.support/apba-support-cxf/1.0.0</bundle>  
         <bundle>mvn:es.apba.infra.esb.aismanager/api/${project.version}</bundle>   
         <bundle>mvn:es.apba.infra.esb.aismanager/aismanager2esb/${project.version}</bundle> 
